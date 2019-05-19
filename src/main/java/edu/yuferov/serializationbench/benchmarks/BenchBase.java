@@ -1,14 +1,15 @@
 package edu.yuferov.serializationbench.benchmarks;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openjdk.jmh.annotations.*;
 
-@BenchmarkMode({ Mode.All })
+@BenchmarkMode(Mode.Throughput)
 @State(Scope.Benchmark)
 public abstract class BenchBase {
     static class Data {
         Object object;
         Class clazz;
-        String serialized;
+        byte[] serialized;
     }
 
     @Param({
@@ -19,25 +20,40 @@ public abstract class BenchBase {
     })
     private String className;
     private Data currentData;
+    private final ObjectMapper mapper;
 
-    @Setup(Level.Invocation)
-    public void invocationSetup() throws Exception {
+    protected BenchBase(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
+
+    @Setup(Level.Trial)
+    public void prepare() throws Exception {
         currentData = new Data();
         currentData.clazz = Class.forName(className);
         currentData.object = currentData.clazz.newInstance();
-        currentData.serialized = serializeData(currentData.object);
+        additionalPreparation(mapper, currentData.clazz);
+        currentData.serialized = serializeData(mapper, currentData.object);
+    }
+
+    public void additionalPreparation(ObjectMapper mapper, Class clazz) throws Exception {
     }
 
     @Benchmark
-    public final void serialize() throws Exception {
-        serializeData(currentData.object);
+    public final byte[] serialize() throws Exception {
+        return serializeData(mapper, currentData.object);
     }
 
     @Benchmark
-    public final void deserialize() throws Exception {
-        deserializeData(currentData.serialized, currentData.clazz);
+    public final Object deserialize() throws Exception {
+        return deserializeData(mapper, currentData.serialized, currentData.clazz);
     }
 
-    public abstract String serializeData(Object data) throws Exception;
-    public abstract Object deserializeData(String data, Class clazz) throws Exception;
+    public byte[] serializeData(ObjectMapper mapper, Object data) throws Exception {
+        return mapper.writeValueAsBytes(data);
+    }
+
+    @SuppressWarnings({ "unchecked", "unused" })
+    public Object deserializeData(ObjectMapper mapper, byte[] data, Class clazz) throws Exception {
+        return mapper.readValue(data, clazz);
+    }
 }

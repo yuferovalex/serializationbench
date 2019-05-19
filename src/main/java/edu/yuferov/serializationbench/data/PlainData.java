@@ -13,5 +13,5 @@ public class PlainData {
     private Long aLong = 123456789L;
     private Boolean aBoolean = Boolean.TRUE;
     private String aString = "Some sort of string";
-    private Object[] anArray = { "StringElement", "SomeAnotherElement" };
+    private String[] anStringArray = { "StringElement", "SomeAnotherElement" };
 }
