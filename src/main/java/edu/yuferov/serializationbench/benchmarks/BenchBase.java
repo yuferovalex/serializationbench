@@ -33,6 +33,7 @@ public abstract class BenchBase {
         currentData.object = currentData.clazz.newInstance();
         additionalPreparation(mapper, currentData.clazz);
         currentData.serialized = serializeData(mapper, currentData.object);
+        System.out.println("\n# Length of serialized data: " + currentData.serialized.length);
     }
 
     public void additionalPreparation(ObjectMapper mapper, Class clazz) throws Exception {

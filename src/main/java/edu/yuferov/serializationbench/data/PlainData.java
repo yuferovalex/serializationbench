@@ -3,9 +3,13 @@ package edu.yuferov.serializationbench.data;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class PlainData {
+public class PlainData implements Serializable {
+    private static final long serialVersionUID = 3608089513761191944L;
+
     private Byte aByte = 0x00;
     private Character aChar = 'A';
     private Short aShort = 127;
