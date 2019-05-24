@@ -1,0 +1,11 @@
+---
+anStringArray:
+- "StringElement"
+- "SomeAnotherElement"
+achar: "A"
+ashort: 127
+ainteger: 12345
+along: 123456789
+aboolean: true
+astring: "Some sort of string"
+abyte: 0
